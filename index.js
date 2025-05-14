@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 const app = express();
 const cors = require('cors');
@@ -39,11 +39,18 @@ async function run() {
             const result = await usercollection.insertOne(NewUser);
             res.send(result)
         })
-        app.get('/user', async(req, res) => {
+        app.get('/users', async (req, res) => {
             const corsor = usercollection.find();
             const result = await corsor.toArray()
             res.send(result)
-})
+        })
+        app.delete('/users/:id', async (req, res) => {
+            console.log("req.params")
+            const id = req.params.id;
+            const quary = { _id: new ObjectId(id) }
+            const result = await usercollection.deleteOne(quary)
+            res.send(result)
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
