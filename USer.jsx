@@ -35,7 +35,12 @@ const Users = ({ userPromise }) => {
         console.log("user delete", id)
         fetch(`http://localhost:3000/users/${id}`, {
             method: "DELETE",
-        }).then(res => res.json()).then(data => console.log(data))
+        }).then(res => res.json()).then(data => {
+            if (data.deletedCount) {
+                const remainUser = User.filter(data=>data._id !== id);
+                setUser(remainUser)
+            }
+        })
     }
     return (
         <div>
