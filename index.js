@@ -44,6 +44,12 @@ async function run() {
             const result = await corsor.toArray()
             res.send(result)
         })
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const quary = { _id: new ObjectId(id) };
+            const result = await usercollection.findOne(quary)
+            res.send(result)
+        })
         app.delete('/users/:id', async (req, res) => {
             console.log("req.params")
             const id = req.params.id;
@@ -51,6 +57,21 @@ async function run() {
             const result = await usercollection.deleteOne(quary)
             res.send(result)
         })
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const user = req.body;
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    Name: user.Name,
+                    Email: user.Email,
+                },
+            };
+            const result = await usercollection.updateOne(filter, updateDoc, options)
+            res.send(result)
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
